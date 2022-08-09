@@ -1,4 +1,4 @@
-package invoice;
+import View.invoice_frame;
 
 public class main {
     public static void main(String[] args){

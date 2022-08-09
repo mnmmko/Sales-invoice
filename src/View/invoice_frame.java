@@ -1,13 +1,14 @@
-package invoice;
+package View;
 
-import tables.create_tabeles;
+import Controller.fileoperation;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Vector;
 
@@ -40,6 +41,8 @@ public class invoice_frame extends JFrame implements ActionListener {
     public JTextField tx1;
     public JTextField tx2;
     create_tabeles table=new create_tabeles();
+    //controller fileopertaion
+    fileoperation fp=new fileoperation();
 public invoice_frame(){
     super("Sales invoice");
     //panal
@@ -63,6 +66,44 @@ public invoice_frame(){
     DefaultTableModel model =new DefaultTableModel();
     model.setColumnIdentifiers(col);
     t1.setModel(model);
+    ListSelectionModel m=t1.getSelectionModel();
+    m.addListSelectionListener(new ListSelectionListener() {
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
+            DefaultTableModel models= (DefaultTableModel) t2.getModel();
+            if(!m.isSelectionEmpty()){
+             String val1=  t1.getValueAt(m.getMinSelectionIndex(),0).toString();
+             int rows=t2.getRowCount();
+
+                models.setColumnIdentifiers(col1);
+                Vector row = new Vector();
+             for (int i=0; i<rows;i++) {
+                 String val2 = models.getValueAt(i, 0).toString();
+
+
+                 if(val1.equals(val2)){
+
+                     for (int k=0;k<5;k++){
+
+                         row.add(t2.getValueAt(i, k));
+
+                     }
+                 }
+                 models.addRow(row);
+                 models.removeRow(0);
+
+             }
+
+
+
+
+                t2.setModel(models);
+
+                //JOptionPane.showMessageDialog(null,"");
+            }
+
+        }
+    });
 
 //invoice item table
     t2=table.create_table(t2,col1,data1);
@@ -135,86 +176,19 @@ public invoice_frame(){
 
    //laod item invoice
 public void load(){
-    JFileChooser filechooser = new JFileChooser();
 
-    int i = filechooser.showOpenDialog(null);
-    if (i == JFileChooser.APPROVE_OPTION) {
-        File f = filechooser.getSelectedFile();
-        String filepath = f.getPath();
-
-        System.out.print(filepath);
-
-        DefaultTableModel model = new DefaultTableModel();
-        String line="";
-        model.setColumnIdentifiers(col);
-        try {
-
-            BufferedReader br=new BufferedReader(new FileReader(filepath));
-            while ((line= br.readLine())!=null){
-
-                String []datas=line.split(",");
-                Vector row = new Vector();
-                row.add(datas[0]);
-                row.add(datas[1]);
-                row.add(datas[2]);
-                row.add("");
-                model.addRow(row);
-
-
-            }
-
-            System.out.println("read invoices item");
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(null,"Can not load file");
-        }
-        t1.setModel(model);
-
-    }
+    fp.read_file(t1,col);
+    fp.read_item(t2,col1);
+    System.out.println("file loaded");
+    JOptionPane.showMessageDialog(null,"file loaded");
 }
  // save invoice data
 public void save_file(){
-    JFileChooser filechooser = new JFileChooser();
+    fp.save_data(t1);
+    fp.save_data(t2);
+    System.out.println("file saved");
+    JOptionPane.showMessageDialog(null,"file saved");
 
-    int i = filechooser.showOpenDialog(null);
-    if (i == JFileChooser.APPROVE_OPTION) {
-        File f = filechooser.getSelectedFile();
-        String filepath = f.getPath();
-
-        System.out.print(filepath);
-
-
-
-
-        FileOutputStream fos=null;
-        try {
-
-
-
-            fos=new FileOutputStream(filepath);
-            for(int k=0;k<=t1.getRowCount();k++){
-                for (int j=0;j<t1.getColumnCount();j++){
-                    fos.write((t1.getValueAt(k,j)+",").toString().getBytes());
-                }
-                fos.write("\n".getBytes());
-            }
-            JOptionPane.showMessageDialog(null,"file saved");
-
-            System.out.println("saved file");
-
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(null,"Can not save file");
-        }catch (Exception e){
-
-        }
-        finally {try{
-            fos.close();
-        }catch (IOException e){
-
-        }
-        }
-
-
-    }
 }
 
 //cancel function reset all invoive item
