@@ -13,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.Vector;
 
 public class invoice_frame extends JFrame implements ActionListener {
+
     private JPanel panel;
     private JPanel panel1;
     private JMenuBar menubar;
@@ -177,15 +178,16 @@ public invoice_frame(){
    //laod item invoice
 public void load(){
 
-    fp.read_file(t1,col);
+    fp.readFile(t1,col);
     fp.read_item(t2,col1);
     System.out.println("file loaded");
     JOptionPane.showMessageDialog(null,"file loaded");
 }
- // save invoice data
+ // save invoice data2)
+ //	at javax.swing.plaf.basic.BasicMenuItemUI$Handler.mouseReleased(BasicMenu
 public void save_file(){
-    fp.save_data(t1);
-    fp.save_data(t2);
+    fp.writeFile(t1);
+    fp.writeFile(t2);
     System.out.println("file saved");
     JOptionPane.showMessageDialog(null,"file saved");
 
