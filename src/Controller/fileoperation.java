@@ -6,41 +6,30 @@ import Model.invoiceLine;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.io.*;
-import java.util.Vector;
+import java.util.ArrayList;
 
 public class fileoperation extends JTable{
-//invoice header model
-invoiceHeader ih=new invoiceHeader();
-//invoice line model
-invoiceLine il=new invoiceLine();
-
     //read ivoice data
-    public void readFile(JTable t, String col[]){
-          String filepath=file_choose();
+    public ArrayList<invoiceHeader> readFile(){
 
-            DefaultTableModel model = new DefaultTableModel();
+          String filepath=file_choose();
         String line="";
-        model.setColumnIdentifiers(col);
+
+ArrayList<invoiceHeader> ah=new ArrayList<>();
 
         try {
             BufferedReader br=new BufferedReader(new FileReader(filepath));
             while ((line= br.readLine())!=null){
             String[] datas=(line.split(","));
-
-                Vector row = new Vector();
-                row.add(datas[0]);
-                row.add(datas[1]);
-                row.add(datas[2]);
-                row.add(datas[3]);
-                model.addRow(row);
-
+               ah.add(new invoiceHeader(datas[0],datas[1],datas[2],datas[3]));
 
             }
             System.out.println("read invoices item");
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(null,"Can not load file");
         }
-        t.setModel(model);
+      //  t.setModel(model);
+        return ah;
     }
     //save data
     public void writeFile(JTable t){
@@ -74,29 +63,24 @@ invoiceLine il=new invoiceLine();
 
     }
     //read invoice item
-    public void read_item(JTable t,String col[]){
+    public ArrayList<invoiceLine> read_item(){
           String filepath=file_choose();
 
             DefaultTableModel model = new DefaultTableModel();
         String line="";
-        model.setColumnIdentifiers(col);
+
+        ArrayList<invoiceLine> al=new ArrayList<>();
         try {
             BufferedReader br=new BufferedReader(new FileReader(filepath));
             while ((line= br.readLine())!=null){
                 String []datas=line.split(",");
-                Vector row = new Vector();
-                row.add(datas[0]);
-                row.add(datas[1]);
-                row.add(datas[2]);
-                row.add(datas[3]);
-                row.add(Integer.parseInt(datas[3])*Integer.parseInt(datas[2]));
-                model.addRow(row);
+                al.add(new invoiceLine(datas[0],datas[1],datas[2],datas[3],String.valueOf(Integer.parseInt(datas[3])*Integer.parseInt(datas[2]))));
             }
             System.out.println("read invoices item");
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(null,"Can not load file");
         }
-        t.setModel(model);
+        return al;
     }
 
 

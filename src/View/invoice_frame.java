@@ -1,6 +1,8 @@
 package View;
 
 import Controller.fileoperation;
+import Model.invoiceHeader;
+import Model.invoiceLine;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -10,6 +12,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Vector;
 
 public class invoice_frame extends JFrame implements ActionListener {
@@ -44,6 +47,8 @@ public class invoice_frame extends JFrame implements ActionListener {
     create_tabeles table=new create_tabeles();
     //controller fileopertaion
     fileoperation fp=new fileoperation();
+    ArrayList<invoiceHeader> ih=new ArrayList<>();
+    ArrayList<invoiceLine> il=new ArrayList<>();
 public invoice_frame(){
     super("Sales invoice");
     //panal
@@ -67,40 +72,39 @@ public invoice_frame(){
     DefaultTableModel model =new DefaultTableModel();
     model.setColumnIdentifiers(col);
     t1.setModel(model);
+
+
+    //select row from invoice data tabel to show it in invoice item table
     ListSelectionModel m=t1.getSelectionModel();
     m.addListSelectionListener(new ListSelectionListener() {
         @Override
         public void valueChanged(ListSelectionEvent e) {
-            DefaultTableModel models= (DefaultTableModel) t2.getModel();
-            if(!m.isSelectionEmpty()){
-             String val1=  t1.getValueAt(m.getMinSelectionIndex(),0).toString();
-             int rows=t2.getRowCount();
+           // DefaultTableModel models= new DefaultTableModel() ;
+            if(!m.isSelectionEmpty()) {
+                String val1 = t1.getValueAt(m.getMinSelectionIndex(), 0).toString();
+                ArrayList<invoiceLine> il2 = new ArrayList<>();
 
-                models.setColumnIdentifiers(col1);
-                Vector row = new Vector();
-             for (int i=0; i<rows;i++) {
-                 String val2 = models.getValueAt(i, 0).toString();
+                DefaultTableModel model1 = new DefaultTableModel();
+
+                model1.setColumnIdentifiers(col1);
+                for (int i = 0; i < il.size(); i++) {
+
+                    if (val1.equals(il.get(i).getNo())) {
+
+                        Vector row = new Vector();
+                        row.add(il.get(i).getNo());
+                        row.add(il.get(i).getItemname());
+                        row.add(il.get(i).getItemprice());
+                        row.add(il.get(i).getCount());
+                        row.add(il.get(i).getItemtotal());
+                        model1.addRow(row);
+                    }
+                }
+                t2.setModel(model1);
+
+                //System.out.println(k);
 
 
-                 if(val1.equals(val2)){
-
-                     for (int k=0;k<5;k++){
-
-                         row.add(t2.getValueAt(i, k));
-
-                     }
-                 }
-                 models.addRow(row);
-                 models.removeRow(0);
-
-             }
-
-
-
-
-                t2.setModel(models);
-
-                //JOptionPane.showMessageDialog(null,"");
             }
 
         }
@@ -177,11 +181,17 @@ public invoice_frame(){
 
    //laod item invoice
 public void load(){
-
-    fp.readFile(t1,col);
-    fp.read_item(t2,col1);
+try {
+     ih = fp.readFile();
+    test(ih);
+    t1.setModel(table.loaddata(t1, ih, col));
+     il = fp.read_item();
+    t2.setModel(table.tableitems(t2, il, col1));
     System.out.println("file loaded");
-    JOptionPane.showMessageDialog(null,"file loaded");
+    JOptionPane.showMessageDialog(null, "file loaded");
+}catch (Exception e){
+
+}
 }
  // save invoice data2)
  //	at javax.swing.plaf.basic.BasicMenuItemUI$Handler.mouseReleased(BasicMenu
@@ -258,7 +268,7 @@ public void save(){
             }
     }
     //delete selected invoice
-    public void delete(){
+    public void delate(){
         try{
             int row= t1.getSelectedRow();
             DefaultTableModel model=(DefaultTableModel) t1.getModel();
@@ -272,6 +282,17 @@ public void save(){
             }}catch (Exception e){
             JOptionPane.showMessageDialog(null,"Empty row");
         }
+    }
+    //test function
+    public void test(ArrayList<invoiceHeader> test){
+    if(test!=null){
+    for (int i=0;i<test.size();i++) {
+        System.out.println("Invoice" + i + "Num{" + "\n" + test.get(0).getNo() + ", " + test.get(i).getDate() + ", " + test.get(i).getCustomer() + ", " + test.get(i).getTotal() + "\n" + "}");
+    }
+
+        }else {
+        System.out.println("no data in arraylist");
+    }
     }
 
 
@@ -290,7 +311,7 @@ public void save(){
            create_invoice();
         }
        else if(e.getSource().equals(delete_invoice)){
-           delete();
+           delate();
         }
 
     }
