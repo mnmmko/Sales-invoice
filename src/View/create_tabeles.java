@@ -52,49 +52,5 @@ return t;
        // t.setModel(model);
        return model;
     }
-//    public DefaultTableModel selectrow(JTable t1,JTable t2,String []col,ArrayList<invoiceLine> il){
-//        DefaultTableModel model1 = new DefaultTableModel();
-//        try{
-//        ListSelectionModel m=t1.getSelectionModel();
-//
-//        m.addListSelectionListener(new ListSelectionListener() {
-//            @Override
-//            public void valueChanged(ListSelectionEvent e) {
-//                // DefaultTableModel models= new DefaultTableModel() ;
-//                if(!m.isSelectionEmpty()) {
-//                    String val1 = t1.getValueAt(m.getMinSelectionIndex(), 0).toString();
-//                    ArrayList<invoiceLine> il2 = new ArrayList<>();
-//
-//
-//
-//                    model1.setColumnIdentifiers(col);
-//                    for (int i = 0; i < il.size(); i++) {
-//
-//                        if (val1.equals(il.get(i).getNo())) {
-//
-//                            Vector row = new Vector();
-//                            row.add(il.get(i).getNo());
-//                            row.add(il.get(i).getItemname());
-//                            row.add(il.get(i).getItemprice());
-//                            row.add(il.get(i).getCount());
-//                            row.add(il.get(i).getItemtotal());
-//                            model1.addRow(row);
-//                        }
-//                    }
-//                   // t2.setModel(model1);
-//
-//                    //System.out.println(k);
-//
-//
-//                }
-//
-//
-//            }
-//        });
-//
-//        }catch (Exception e){
-//
-//        }
-//        return model1;
-//    }
+
 }

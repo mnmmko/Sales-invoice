@@ -196,10 +196,10 @@ try {
  // save invoice data2)
  //	at javax.swing.plaf.basic.BasicMenuItemUI$Handler.mouseReleased(BasicMenu
 public void save_file(){
-    fp.writeFile(t1);
-    fp.writeFile(t2);
+    ih=fp.writeFileHeader(ih);
+   il= fp.writeFileLine(il);
     System.out.println("file saved");
-    JOptionPane.showMessageDialog(null,"file saved");
+    //JOptionPane.showMessageDialog(null,"file saved");
 
 }
 
@@ -230,16 +230,23 @@ public void save(){
     int sum_total=0;
         int row= t2.getRowCount();
         DefaultTableModel model=(DefaultTableModel) t2.getModel();
-        for(int i=0;i<=row;i++) {
+        for(int i=0;i<row;i++) {
             int total_price = Integer.parseInt(model.getValueAt(i, 2).toString()) * Integer.parseInt(model.getValueAt(i, 3).toString());
             model.setValueAt(total_price, i, 4);
             sum_total+=total_price;
             invoice_totals.setText(Integer.toString(sum_total));
             inv_nums.setText(model.getValueAt(i, 0).toString());
+            il.add(new invoiceLine(String.valueOf(model.getValueAt(i,0)),
+                    String.valueOf( model.getValueAt(i,1)),
+                    String.valueOf( model.getValueAt(i,2)),
+                    String.valueOf ( model.getValueAt(i,3)),
+                    String.valueOf( model.getValueAt(i,4))));
             if(model.getValueAt(row-1,4)!="") {
                 model.addRow(data1);
             }
         }
+
+        System.out.println(il.get(5).getNo());
         t2.setModel(model);
         System.out.println("save changes in item invoice");
     }catch (Exception e){
@@ -261,6 +268,10 @@ public void save(){
             row.add(tx2.getText());
             row.add(invoice_totals.getText());
             model.addRow(row);
+            ih.add(new invoiceHeader(String.valueOf(inv_nums.getText()),
+                    String.valueOf(tx1.getText()),
+                    String.valueOf(tx2.getText()),
+                    String.valueOf(invoice_totals.getText())));
 
         }  catch (Exception e){
                  JOptionPane.showMessageDialog(null,"Invalid date format ,date format must be dd-mm-yyyy");

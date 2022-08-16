@@ -31,17 +31,19 @@ ArrayList<invoiceHeader> ah=new ArrayList<>();
       //  t.setModel(model);
         return ah;
     }
-    //save data
-    public void writeFile(JTable t){
+    //save invice header
+    public ArrayList<invoiceHeader> writeFileHeader(ArrayList<invoiceHeader> data){
 
         String filepath=file_choose();
         FileOutputStream fos=null;
         try {
             fos=new FileOutputStream(filepath);
-            for(int k=0;k<=t.getRowCount();k++){
-                for (int j=0;j<t.getColumnCount();j++){
-                    fos.write((t.getValueAt(k,j)+",").toString().getBytes());
-                }
+
+            for(int i=0;i<data.size();i++){
+                fos.write((data.get(i).getNo()+",").toString().getBytes());
+                fos.write((data.get(i).getDate()+",").toString().getBytes());
+                fos.write((data.get(i).getCustomer()+",").toString().getBytes());
+                fos.write((data.get(i).getTotal()+",").toString().getBytes());
                 fos.write("\n".getBytes());
             }
             JOptionPane.showMessageDialog(null,"file saved");
@@ -59,7 +61,41 @@ ArrayList<invoiceHeader> ah=new ArrayList<>();
 
         }
         }
+return data;
 
+    }
+    //save invice line
+    public ArrayList<invoiceLine> writeFileLine(ArrayList<invoiceLine> data){
+
+        String filepath=file_choose();
+        FileOutputStream fos=null;
+        try {
+            fos=new FileOutputStream(filepath);
+
+            for(int i=0;i<data.size();i++){
+                fos.write((data.get(i).getNo()+",").toString().getBytes());
+                fos.write((data.get(i).getItemname()+",").toString().getBytes());
+                fos.write((data.get(i).getItemprice()+",").toString().getBytes());
+                fos.write((data.get(i).getCount()+",").toString().getBytes());
+                fos.write((data.get(i).getItemtotal()+",").toString().getBytes());
+                fos.write("\n".getBytes());
+            }
+            JOptionPane.showMessageDialog(null,"file saved");
+
+            System.out.println("saved file");
+
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null,"Can not save file");
+        }catch (Exception e){
+
+        }
+        finally {try{
+            fos.close();
+        }catch (IOException e){
+
+        }
+        }
+return data;
 
     }
     //read invoice item
