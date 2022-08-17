@@ -15,13 +15,16 @@ public class fileoperation extends JTable{
           String filepath=file_choose();
         String line="";
 
-ArrayList<invoiceHeader> ah=new ArrayList<>();
+        ArrayList<invoiceHeader> ah=new ArrayList<>();
+        ArrayList<invoiceLine> il=read_item();
 
         try {
             BufferedReader br=new BufferedReader(new FileReader(filepath));
+            int i=0;
             while ((line= br.readLine())!=null){
             String[] datas=(line.split(","));
-               ah.add(new invoiceHeader(datas[0],datas[1],datas[2],datas[3]));
+
+                ah.add(new invoiceHeader(datas[0], datas[1], datas[2], datas[3], il));
 
             }
             System.out.println("read invoices item");

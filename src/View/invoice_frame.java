@@ -79,7 +79,7 @@ public invoice_frame(){
     m.addListSelectionListener(new ListSelectionListener() {
         @Override
         public void valueChanged(ListSelectionEvent e) {
-           // DefaultTableModel models= new DefaultTableModel() ;
+
             if(!m.isSelectionEmpty()) {
                 String val1 = t1.getValueAt(m.getMinSelectionIndex(), 0).toString();
                 ArrayList<invoiceLine> il2 = new ArrayList<>();
@@ -182,11 +182,16 @@ public invoice_frame(){
    //laod item invoice
 public void load(){
 try {
-     ih = fp.readFile();
-    test(ih);
+    ih = fp.readFile();
     t1.setModel(table.loaddata(t1, ih, col));
-     il = fp.read_item();
+    for (int i=0;i<ih.size();i++){
+        il=ih.get(i).getIl();
+    }
+    System.out.println(il);
+    //il = fp.read_item();
     t2.setModel(table.tableitems(t2, il, col1));
+
+    test(ih);
     System.out.println("file loaded");
     JOptionPane.showMessageDialog(null, "file loaded");
 }catch (Exception e){
@@ -271,7 +276,7 @@ public void save(){
             ih.add(new invoiceHeader(String.valueOf(inv_nums.getText()),
                     String.valueOf(tx1.getText()),
                     String.valueOf(tx2.getText()),
-                    String.valueOf(invoice_totals.getText())));
+                    String.valueOf(invoice_totals.getText()),il));
 
         }  catch (Exception e){
                  JOptionPane.showMessageDialog(null,"Invalid date format ,date format must be dd-mm-yyyy");
@@ -283,9 +288,22 @@ public void save(){
         try{
             int row= t1.getSelectedRow();
             DefaultTableModel model=(DefaultTableModel) t1.getModel();
+
             if(t1.getSelectedRowCount()==1){
                 model.removeRow(row);
                 System.out.println("delete invoice data");
+                System.out.println(ih.get(row).getNo());
+
+                  for (int i=0;i<il.size();i++){
+                      if(ih.get(row).getNo()==il.get(i).getNo()){
+                          il.remove(i);
+
+                      }
+                  }
+                ih.remove(row);
+//                  for(int i : il.indexOf(ih.get(row).getNo())) {
+//                      il.remove(il.indexOf(ih.get(row).getNo()));
+//                  }
             }else {
                 if(t1.getSelectedRowCount()==0){
                     JOptionPane.showMessageDialog(null,"Select Row","Dialog",JOptionPane.PLAIN_MESSAGE);
@@ -298,7 +316,13 @@ public void save(){
     public void test(ArrayList<invoiceHeader> test){
     if(test!=null){
     for (int i=0;i<test.size();i++) {
-        System.out.println("Invoice" + i + "Num{" + "\n" + test.get(0).getNo() + ", " + test.get(i).getDate() + ", " + test.get(i).getCustomer() + ", " + test.get(i).getTotal() + "\n" + "}");
+        System.out.print("Invoice" + i + "Num{" + "\n"  + test.get(i).getDate() + ", " + test.get(i).getCustomer() + ", " + test.get(i).getTotal() + "\n");
+        for (int k=0;k<test.get(i).getIl().size();k++){
+            if(test.get(i).getNo().equals(test.get(i).il.get(k).getNo())) {
+                System.out.print(test.get(i).getIl().get(k).getItemname() + ", " + test.get(i).getIl().get(k).getItemprice() + ", " + test.get(i).getIl().get(k).getCount() + ", " + test.get(i).getIl().get(k).getItemtotal() + "\n");
+            }
+        }
+        System.out.println("}");
     }
 
         }else {

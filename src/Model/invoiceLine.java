@@ -1,6 +1,9 @@
 package Model;
 
-public class invoiceLine {
+import java.util.ArrayList;
+import java.util.stream.Stream;
+
+public class invoiceLine extends ArrayList<invoiceLine> {
     public String no;
     public String itemname;
     public String itemprice;
@@ -56,5 +59,10 @@ public class invoiceLine {
 
     public void setItemtotal(String itemtotal) {
         this.itemtotal = itemtotal;
+    }
+
+    @Override
+    public Stream<invoiceLine> stream() {
+        return super.stream();
     }
 }
